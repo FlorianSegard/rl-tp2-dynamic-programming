@@ -45,6 +45,7 @@ class MDP(gym.Env):
 
     def __init__(self):
         # BEGIN SOLUTION
+        return
         # END SOLUTION
 
     def reset_state(self, value: t.Optional[int] = None):
