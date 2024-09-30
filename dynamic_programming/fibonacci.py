@@ -24,6 +24,10 @@ def fibonacci(n: int) -> int:
     Calcule le n-ième terme de la suite de Fibonacci.
     """
     # BEGIN SOLUTION
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
     # END SOLUTION
 
 
