@@ -1,3 +1,4 @@
+import numpy as np
 """
 Partie 2 - Programmation dynamique
 ==================================
@@ -28,6 +29,7 @@ def fibonacci(n: int) -> int:
         return 0
     if n == 1:
         return 1
+    return fibonacci(n - 1) + fibonacci(n - 2)
     # END SOLUTION
 
 
@@ -46,4 +48,14 @@ def fibonacci_memo(n: int) -> int:
     """
 
     # BEGIN SOLUTION
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    list = np.zeros(n + 1)
+    list[0] = 0
+    list[1] = 1
+    for i in range(2, n + 1):
+        list[i] = list[i - 1] + list[i - 2]
+    return list[n]
     # END SOLUTION
