@@ -26,6 +26,23 @@ def mdp_value_iteration(mdp: MDP, max_iter: int = 1000, gamma=1.0) -> np.ndarray
     """
     values = np.zeros(mdp.observation_space.n)
     # BEGIN SOLUTION
+    for _ in range(max_iter):
+        new_values = np.copy(values)
+        
+        for state in range(mdp.observation_space.n):
+            state_values = []
+            
+            for action in range(mdp.action_space.n):
+                action_value = 0
+                for next_state, reward, done in mdp.P[state][action]:
+                    action_value += reward + gamma * values[next_state] * (not done)
+                state_values.append(action_value)
+                
+            new_values[state] = max(state_values)
+        
+        if np.max(np.abs(new_values - values)) < 1e-5:
+            break
+        values = new_values
     # END SOLUTION
     return values
 
@@ -72,3 +89,41 @@ def stochastic_grid_world_value_iteration(
 ) -> np.ndarray:
     values = np.zeros((4, 4))
     # BEGIN SOLUTION
+    for _ in range(max_iter):
+        delta = 0
+        prev_values = np.copy(values)
+
+        # Pour chaque état dans la grille
+        for row in range(4):
+            for col in range(4):
+                env.set_state((row, col))
+                
+                # Si l'état est terminal, passer à l'itération suivante
+                if env.is_terminal((row, col)):
+                    continue
+
+                state_value = float("-inf")
+                # Pour chaque action possible depuis cet état
+                for action in range(env.action_space.n):
+                    action_value = 0
+                    next_states = env.get_next_states(action)
+                    
+                    # Calcul de la somme pondérée des valeurs des états suivants
+                    for next_state, reward, probability, _, _ in next_states:
+                        next_row, next_col = next_state
+                        action_value += (
+                            probability
+                            * (reward + gamma * prev_values[next_row, next_col])
+                        )
+                    state_value = max(state_value, action_value)
+
+                # Mettre à jour la valeur de l'état actuel
+                values[row, col] = state_value
+                # Calculer le changement maximum (delta) pour vérifier la convergence
+                delta = max(delta, abs(state_value - prev_values[row, col]))
+
+        # Vérifier la convergence
+        if delta < theta:
+            break
+    return values
+    # END SOLUTION
