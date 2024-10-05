@@ -48,21 +48,12 @@ class MDP(gym.Env):
         self.observation_space = spaces.Discrete(3)  # état: 0, 1, 2
         self.action_space = spaces.Discrete(2)  # action: 0, 1
         self.state = 0
-        
-        self.P = {
-            0: {
-                0: [(1, -1, False)],  #   - état 0, action 0 -> état 1, récompense -1
-                1: [(0, -1, False)],  #   - état 0, action 1 -> état 0, récompense -1
-            },
-            1: {
-                0: [(0, -1, False)],  #   - état 1, action 0 -> état 0, récompense -1
-                1: [(2, -1, False)],  #   - état 1, action 1 -> état 2, récompense -1
-            },
-            2: {
-                0: [(2, 0, True)],   #   - état 2, action 0 -> état 2, récompense 0
-                1: [(0, -1, False)],  #   - état 2, action 1 -> état 0, récompense -1
-            },
-        }
+
+        self.P = [
+            [(1, -1, False), (0, -1, False)],  # état 0
+            [(0, -1, False), (2, -1, False)],  # état 1
+            [(2, 0, False), (0, -1, False)]  # état 2
+        ]
         # END SOLUTION
 
     def reset_state(self, value: t.Optional[int] = None):
@@ -85,7 +76,6 @@ class MDP(gym.Env):
         """
         # BEGIN SOLUTION
         next_state, reward, done = self.P[self.state][action]
-        if transition:
-            self.state = next_state
-        return next_state, reward, done, {} # pas compris pour le dico d'info
+        self.state = next_state
+        return next_state, reward, done, {}  # pas compris pour le dico d'info
         # END SOLUTION
