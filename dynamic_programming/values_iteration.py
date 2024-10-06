@@ -56,9 +56,31 @@ def grid_world_value_iteration(
     Estimation de la fonction de valeur grâce à l'algorithme "value iteration".
     theta est le seuil de convergence (différence maximale entre deux itérations).
     """
-    values = np.zeros((4, 4))
+    # values = np.zeros((4, 4))
     # BEGIN SOLUTION
-    # TODO
+    values = np.zeros((env.height, env.width))
+    for iteration in range(max_iter):
+        delta = 0
+        new_values = values.copy()
+        for row in range(env.height):
+            for col in range(env.width):
+                state = (row, col)
+                # Skip walls and terminal states
+                if env.grid[state] in {'W', 'P', 'N'}:
+                    continue
+                v = values[state]
+                max_value = float('-inf')
+                for action in range(env.action_space.n):
+                    env.set_state(row, col)
+                    next_state, reward, done, _ = env.step(action, make_move=False)
+                    value = reward + gamma * values[next_state]
+                    if value > max_value:
+                        max_value = value
+                new_values[state] = max_value
+                delta = max(delta, abs(v - new_values[state]))
+        values = new_values
+        if delta < theta:
+            break
     return values
     # END SOLUTION
 
@@ -88,8 +110,8 @@ def stochastic_grid_world_value_iteration(
     gamma: float = 1.0,
     theta: float = 1e-5,
 ) -> np.ndarray:
-    values = np.zeros((4, 4))
+    # values = np.zeros((4, 4))
     # BEGIN SOLUTION
-    # TODO
+    values = np.zeros((env.height, env.width))
     return values
     # END SOLUTION
